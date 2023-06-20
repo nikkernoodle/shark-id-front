@@ -21,6 +21,8 @@ url = 'https://shark-api-o7bru5oetq-ew.a.run.app'
 
 
 #styling starts here
+
+#add a title to the page and the shark emoji
 st.set_page_config(layout='wide',
                    page_title='Sharks prediction',
                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
