@@ -5,21 +5,41 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
-import pandas as pd
 import requests
+import pandas as pd
 
 
 ## Streamlit app
 st.title("Shark-ID")
 st.text("Upload an image to predict the shark species.")
 
-# now local, later we will put it to google cloud
-url = 'https://shark-api-o7bru5oetq-ew.a.run.app'
+#now lokal, later we will put it to google cloud
+API_URL = 'https://shark-api-o7bru5oetq-ew.a.run.app'
 
-# styling starts here
-# st.set_page_config(layout='wide',
-#                    page_title='Sharks prediction',
-#                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
+
+#styling starts here
+
+#add a title to the page and the shark emoji
+st.set_page_config(layout='wide',
+                   page_title='Sharks prediction',
+                   page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
+
+
+#an attempt at adding a background image (does not work atm)
+page_bg_img = '''
+<style>
+.stApp {
+  background-image: url("https://i.ibb.co/nbDjRQp/air-bubbles-water-nature-background-476363-808.jpg");
+  background-size: cover;
+}
+</style>
+'''
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+
+
+
 
 # Shark-ID front
 buffer_image = st.file_uploader('Upload an Image')
@@ -42,7 +62,7 @@ if st.button('Predict'):
     with st.spinner('Sharking...'):
         st.markdown("This shark could be:")
         img_bytes = buffer_image.getvalue()
-        res = requests.post(url + "/predict_file", files={'file': img_bytes})
+        res = requests.post(API_URL + "/predict_file", files={'file': img_bytes})
 
         if res.status_code == 200:
             # Display the prediction returned by the API
