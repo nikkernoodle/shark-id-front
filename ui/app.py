@@ -24,6 +24,8 @@ st.set_page_config(layout='wide',
                    page_title='Sharks prediction',
                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
 
+
+#an attempt at adding a background image (does not work atm)
 page_bg_img = '''
 <style>
 .stApp {
