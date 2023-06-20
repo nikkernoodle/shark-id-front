@@ -17,9 +17,9 @@ st.text("Upload an image to predict the shark species.")
 url = 'https://shark-api-o7bru5oetq-ew.a.run.app'
 
 # styling starts here
-st.set_page_config(layout='wide',
-                   page_title='Sharks prediction',
-                   page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
+# st.set_page_config(layout='wide',
+#                    page_title='Sharks prediction',
+#                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
 
 # Shark-ID front
 buffer_image = st.file_uploader('Upload an Image')
