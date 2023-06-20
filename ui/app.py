@@ -3,13 +3,10 @@
 #	→ run through model
 
 import streamlit as st
-import tensorflow as tf
 from PIL import Image
-from shark_id.predict import predict_image
-from io import BytesIO
 import numpy as np
-import pandas as pd
 import requests
+import pandas as pd
 
 
 ## Streamlit app
@@ -17,7 +14,7 @@ import requests
 #st.text("Upload an image to predict the shark species.")
 
 #now lokal, later we will put it to google cloud
-url = 'https://shark-api-o7bru5oetq-ew.a.run.app'
+API_URL = 'https://shark-api-o7bru5oetq-ew.a.run.app'
 
 
 #styling starts here
@@ -26,6 +23,20 @@ url = 'https://shark-api-o7bru5oetq-ew.a.run.app'
 st.set_page_config(layout='wide',
                    page_title='Sharks prediction',
                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
+
+page_bg_img = '''
+<style>
+.stApp {
+  background-image: url("https://i.ibb.co/nbDjRQp/air-bubbles-water-nature-background-476363-808.jpg");
+  background-size: cover;
+}
+</style>
+'''
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+
+
 
 
 # Shark-ID front
@@ -53,7 +64,7 @@ if st.button('Predict'):
     with st.spinner('Sharking...'):
         st.markdown("This shark could be:")
         img_bytes = buffer_image.getvalue()
-        res = requests.post(url + "/predict_file", files={'file': img_bytes})
+        res = requests.post(API_URL + "/predict_file", files={'file': img_bytes})
 
         if res.status_code == 200:
             # Display the prediction returned by the API
