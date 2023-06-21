@@ -49,26 +49,28 @@ if buffer_image is not None:
     with col1:
         image = Image.open(buffer_image)
         image_array= np.array(image) # if you want to pass it to OpenCV
-        st.image(image_array, width=int(0.438*1920))
+        st.image(image_array, use_column_width=True)
 
     with col2:
-        with st.spinner('Sharking...'):
-            img_bytes = buffer_image.getvalue()
-            res = requests.post(API_URL + "/predict_file", files={'file': img_bytes})
+        l, r = st.columns(2)
+        with l:
+            with st.spinner('Sharking...'):
+                img_bytes = buffer_image.getvalue()
+                res = requests.post(API_URL + "/predict_file", files={'file': img_bytes})
 
-            if res.status_code == 200:
-                st.markdown("##### **This shark could be:**")
+                if res.status_code == 200:
+                    st.markdown("##### **This shark could be:**")
 
-                # Display the prediction returned by the API
-                prediction = pd.DataFrame(res.json(), columns=['Probability'], index=classes)
-                prediction.sort_values(by='Probability', ascending=False, inplace=True)
-                output = [f'{round(_*100, 2)}%' for _ in prediction.Probability.values]
-                prediction['Probability'] = output
-                st.dataframe(prediction[0:3], width=int(0.2*1920))
+                    # Display the prediction returned by the API
+                    prediction = pd.DataFrame(res.json(), columns=['Probability'], index=classes)
+                    prediction.sort_values(by='Probability', ascending=False, inplace=True)
+                    output = [f'{round(_*100, 2)}%' for _ in prediction.Probability.values]
+                    prediction['Probability'] = output
+                    st.dataframe(prediction[0:3], use_container_width=True)
 
-            else:
-                st.markdown("**Oops**, something went wrong 😓 Please try again.")
-                print(res.status_code, res.content)
+                else:
+                    st.markdown("**Oops**, something went wrong 😓 Please try again.")
+                    print(res.status_code, res.content)
 
 # background image
 page_bg_img = '''
