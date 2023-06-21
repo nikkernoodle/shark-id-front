@@ -7,6 +7,8 @@ from PIL import Image
 import numpy as np
 import requests
 import pandas as pd
+from io import BytesIO
+
 
 # Prepare variables etc.
 buffer_image = None
@@ -22,6 +24,17 @@ st.set_page_config(layout='wide',
                    page_title='Sharks prediction',
                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
 
+# background image
+page_bg_img = '''
+<style>
+.stApp {
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c5/Biscayne_underwater_NPS1.jpg");
+  background-size: cover;
+}
+</style>
+'''
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
 # add a title to the page and the shark emoji
 title_col, gh_col, *_ = st.columns(6)
 
@@ -29,23 +42,53 @@ title_col.title("🦈 Shark-ID")
 gh_col.title("[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/nikkernoodle/shark-id)")
 st.markdown("##### **Upload an image to predict the shark species.**")
 
-# model
-# load_model takes model_path as an argument
-# we need to be able to give the model path as an argument
-# to predict the image we need to then create something else using predict_image
+left_co, cent_co, last_co = st.columns(3)
+
+with left_co:
+    option = st.radio('sdg\h', ('File', 'Link'), label_visibility="hidden")
+
+if option == 'File':
+    buffer_image = st.file_uploader('', label_visibility='hidden')
+
+elif option == 'Link':
+    url_with_pic = st.text_input('Pass url containing picture of a shark:')
+
 
 # Shark-ID front
-buffer_image = st.file_uploader('', label_visibility='hidden')
-
-if buffer_image is not None:
+if option == 'File' and buffer_image:
     st.markdown('''
         <style>
             .uploadedFile {display: none}
         <style>''',
         unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+if option == 'Link' and url_with_pic:
+    # Check if url is reachable
+    try:
+        resp_h = requests.head(url_with_pic, timeout=7)
 
+        # Check if url returns an image
+        try:
+            assert resp_h.headers['Content-Type'][:5] == 'image'
+            response = requests.get(url_with_pic, timeout=7)
+            buffer_image = BytesIO(response.content)
+
+        except Exception as e:
+            st.write('Please pass a valid url with an image')
+            url_with_pic = None
+
+    except requests.exceptions.Timeout:
+        st.write('Ooops... The request timed out, please check your url or try another')
+        url_with_pic = None
+
+
+# model
+# load_model takes model_path as an argument
+# we need to be able to give the model path as an argument
+# to predict the image we need to then create something else using predict_image
+col1, col2 = st.columns(2)
+
+if buffer_image:
     with col1:
         image = Image.open(buffer_image)
         image_array= np.array(image) # if you want to pass it to OpenCV
@@ -71,14 +114,3 @@ if buffer_image is not None:
                 else:
                     st.markdown("**Oops**, something went wrong 😓 Please try again.")
                     print(res.status_code, res.content)
-
-# background image
-page_bg_img = '''
-<style>
-.stApp {
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c5/Biscayne_underwater_NPS1.jpg");
-  background-size: cover;
-}
-</style>
-'''
-st.markdown(page_bg_img, unsafe_allow_html=True)
