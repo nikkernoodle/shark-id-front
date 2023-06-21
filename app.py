@@ -9,37 +9,20 @@ import requests
 import pandas as pd
 
 
+API_URL = 'https://shark-api-o7bru5oetq-ew.a.run.app'
+
 ## Streamlit app
 st.set_page_config(layout='wide',
                    page_title='Sharks prediction',
                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
 
-#now local, later we will put it to google cloud
-API_URL = 'https://shark-api-o7bru5oetq-ew.a.run.app'
-
-#add a title to the page and the shark emoji
-st.title("Shark-ID")
-st.markdown("Upload an image to predict the shark species.")
-
-#an attempt at adding a background image (does not work atm)
-page_bg_img = '''
-<style>
-.stApp {
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c5/Biscayne_underwater_NPS1.jpg");
-  background-size: cover;
-}
-</style>
 '''
-
-st.markdown(page_bg_img, unsafe_allow_html=True)
-
-# Shark-ID front
-buffer_image = st.file_uploader('Upload an Image')
-if buffer_image is not None:
-    image = Image.open(buffer_image)
-    image_array= np.array(image) # if you want to pass it to OpenCV
-    st.image(image_array, caption="The caption", use_column_width=True)
-
+[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/nikkernoodle/shark-id)
+'''
+# add a title to the page and the shark emoji
+st.title("Shark-ID")
+st.markdown("**Upload an image to predict the shark species.**")
+#
 # model
 # load_model takes model_path as an argument
 # we need to be able to give the model path as an argument
@@ -48,15 +31,21 @@ classes = {'basking': 0, 'blue': 1, 'hammerhead': 2, 'mako': 3, 'sand tiger': 4,
             'blacktip': 7 , 'bull': 8, 'lemon':9 , 'nurse': 10, 'thresher': 11, 'whale': 12, 'whitetip': 13}
 nice_names = [f'{_.capitalize()} Shark' for _ in classes.keys()]
 classes = dict(zip(nice_names, list(classes.values())))
+#
+# Shark-ID front
+buffer_image = st.file_uploader('', label_visibility='hidden')
+if buffer_image is not None:
+    image = Image.open(buffer_image)
+    image_array= np.array(image) # if you want to pass it to OpenCV
+    st.image(image_array)
 
-# Make the prediction
-if st.button('Predict'):
     with st.spinner('Sharking...'):
-        st.markdown("This shark could be:")
         img_bytes = buffer_image.getvalue()
         res = requests.post(API_URL + "/predict_file", files={'file': img_bytes})
 
         if res.status_code == 200:
+            st.markdown("This shark could be:")
+
             # Display the prediction returned by the API
             prediction = pd.DataFrame(res.json(), columns=['Probability'], index=classes)
             prediction.sort_values(by='Probability', ascending=False, inplace=True)
@@ -66,3 +55,14 @@ if st.button('Predict'):
         else:
             st.markdown("**Oops**, something went wrong 😓 Please try again.")
             print(res.status_code, res.content)
+
+# background image
+page_bg_img = '''
+<style>
+.stApp {
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c5/Biscayne_underwater_NPS1.jpg");
+  background-size: cover;
+}
+</style>
+'''
+st.markdown(page_bg_img, unsafe_allow_html=True)
