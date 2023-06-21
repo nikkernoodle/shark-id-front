@@ -10,36 +10,28 @@ import pandas as pd
 
 
 ## Streamlit app
-st.title("Shark-ID")
-st.text("Upload an image to predict the shark species.")
-
-#now lokal, later we will put it to google cloud
-API_URL = 'https://shark-api-o7bru5oetq-ew.a.run.app'
-
-
-#styling starts here
-
-#add a title to the page and the shark emoji
 st.set_page_config(layout='wide',
                    page_title='Sharks prediction',
                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
 
+#now local, later we will put it to google cloud
+API_URL = 'https://shark-api-o7bru5oetq-ew.a.run.app'
+
+#add a title to the page and the shark emoji
+st.title("Shark-ID")
+st.markdown("Upload an image to predict the shark species.")
 
 #an attempt at adding a background image (does not work atm)
 page_bg_img = '''
 <style>
 .stApp {
-  background-image: url("https://i.ibb.co/nbDjRQp/air-bubbles-water-nature-background-476363-808.jpg");
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c5/Biscayne_underwater_NPS1.jpg");
   background-size: cover;
 }
 </style>
 '''
 
 st.markdown(page_bg_img, unsafe_allow_html=True)
-
-
-
-
 
 # Shark-ID front
 buffer_image = st.file_uploader('Upload an Image')
