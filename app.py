@@ -22,14 +22,12 @@ st.set_page_config(layout='wide',
                    page_title='Sharks prediction',
                    page_icon='https://i.ibb.co/5GGxjMt/1f988.jpg')
 
-# gh link
-'''
-[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/nikkernoodle/shark-id)
-'''
-
 # add a title to the page and the shark emoji
-st.title("Shark-ID")
-st.markdown("**Upload an image to predict the shark species.**")
+title_col, gh_col, *_ = st.columns(6)
+
+title_col.title("🦈 Shark-ID")
+gh_col.title("[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/nikkernoodle/shark-id)")
+st.markdown("##### **Upload an image to predict the shark species.**")
 
 # model
 # load_model takes model_path as an argument
@@ -60,7 +58,8 @@ if buffer_image is not None:
                 prediction.sort_values(by='Probability', ascending=False, inplace=True)
                 output = [f'{round(_*100, 2)}%' for _ in prediction.Probability.values]
                 prediction['Probability'] = output
-                st.dataframe(prediction[0:3])
+                st.dataframe(prediction[0:3], width=int(0.2*1920), height=int(0.25*1080))
+
             else:
                 st.markdown("**Oops**, something went wrong 😓 Please try again.")
                 print(res.status_code, res.content)
