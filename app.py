@@ -39,7 +39,7 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 title_col, gh_col, *_ = st.columns(6)
 
 title_col.title("🦈 Shark-ID")
-gh_col.title("[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/nikkernoodle/shark-id)")
+gh_col.title("[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/nikkinudelman/shark-id)")
 st.markdown("##### **Upload an image to predict the shark species.**")
 
 left_co, cent_co, last_co = st.columns(3)
